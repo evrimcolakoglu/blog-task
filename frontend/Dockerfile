@@ -1,5 +1,5 @@
-# Node.js'in hafif bir sürümünü kullanıyoruz
-FROM node:20-alpine
+# Node.js'in hafif bir sürümünü kullanıyoruz (Debian tabanlı - SWC sorunlarını çözer)
+FROM node:20-slim
 
 # Çalışma dizinini ayarlıyoruz
 WORKDIR /app
