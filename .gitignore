@@ -1,0 +1,10 @@
+# Hassas Bilgiler
+.env
+
+# Sistem Dosyaları
+.DS_Store
+Thumbs.db
+
+# IDE Ayarları
+.vscode/
+.idea/
