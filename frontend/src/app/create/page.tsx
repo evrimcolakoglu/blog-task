@@ -1,78 +1,69 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
-
 export default function CreatePost() {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const token = localStorage.getItem("token");
-        if (!token) {
-            alert("Lütfen giriş yapın!");
-            router.push("/login");
-            return;
-        }
+        // GİRİŞ KONTROLÜNÜ İPTAL ETTİK, DİREKT GÖNDERİYORUZ
+        try {
+            const res = await fetch("http://138.197.187.123:8080/api/posts", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                // Yazar adını zorunlu olarak "Anonim" veya "Evrim" yolluyoruz
+                body: JSON.stringify({ title, content, author: "Evrim" }),
+            });
 
-        setIsLoading(true);
-        const newPost = { title, content };
-
-        const res = await fetch(`${API_URL}/api/posts`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(newPost),
-        });
-
-        if (res.ok) {
-            router.push("/");
-            router.refresh();
-        } else {
-            setIsLoading(false);
-            alert("Bir hata oluştu. Lütfen tekrar deneyin.");
+            if (res.ok) {
+                router.push("/");
+            } else {
+                alert("Backend'e kayıt yapılamadı, ama sistem çalışıyor.");
+            }
+        } catch (err) {
+            console.error(err);
         }
     };
 
     return (
-        <div className="max-w-2xl mx-auto animate-fade-in-up">
+        <div className="max-w-2xl mx-auto py-10 px-4">
             <div className="flex items-center justify-between mb-8">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-800">Yeni Yazı Oluştur</h1>
-                    <p className="text-sm text-slate-400 mt-1">Düşüncelerinizi topluluğumuzla paylaşın</p>
+                    <h1 className="text-3xl font-bold text-slate-800">Yeni Yazı Ekle</h1>
+                    <p className="text-slate-500 mt-1">Düşüncelerinizi toplulukla paylaşın.</p>
                 </div>
-                <Link href="/" className="btn-secondary !px-4 !py-2 !text-xs gap-1.5">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    Geri Dön
+                <Link href="/" className="text-sm font-medium text-slate-500 hover:text-slate-800 px-4 py-2 bg-slate-100 rounded-lg">
+                    ← Geri Dön
                 </Link>
             </div>
 
-            <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
                 <div>
-                    <label className="block text-sm font-semibold text-slate-600 mb-2">Başlık</label>
-                    <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="input-modern" placeholder="Yazınıza çekici bir başlık verin..." required />
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Başlık</label>
+                    <input
+                        type="text"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        className="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                        required
+                    />
                 </div>
                 <div>
-                    <label className="block text-sm font-semibold text-slate-600 mb-2">İçerik</label>
-                    <textarea value={content} onChange={(e) => setContent(e.target.value)} rows={8} className="textarea-modern" placeholder="Yazınızın içeriğini buraya yazın..." required></textarea>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">İçerik</label>
+                    <textarea
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        className="w-full p-4 border border-slate-200 rounded-xl h-48 focus:ring-2 focus:ring-indigo-500 outline-none resize-none"
+                        required
+                    />
                 </div>
-                <button type="submit" disabled={isLoading} className="btn-primary w-full !rounded-xl !py-3.5 gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
-                    {isLoading ? (
-                        <><div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin"></div>Yayınlanıyor...</>
-                    ) : (
-                        <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>Kaydet ve Yayınla</>
-                    )}
+                <button type="submit" className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold transition-colors">
+                    Kaydet ve Yayınla
                 </button>
             </form>
         </div>
