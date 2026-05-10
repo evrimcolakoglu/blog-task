@@ -1,6 +1,6 @@
 # DevBlog - Modern Blog Platformu
 
-DevBlog, kullanıcıların kayıt olup giriş yaparak özgürce fikirlerini paylaşabileceği modern, hızlı ve duyarlı bir blog platformudur. Bu proje, staj değerlendirme süreci kapsamında tam yığın (full-stack) geliştirme becerilerini sergilemek amacıyla hazırlanmıştır.
+DevBlog, kullanıcıların özgürce fikirlerini paylaşabileceği modern, hızlı ve duyarlı bir blog platformudur. Bu proje, staj değerlendirme süreci kapsamında tam yığın (full-stack) geliştirme becerilerini sergilemek amacıyla hazırlanmıştır. Uygulama, hızlı test edilebilirliği artırmak adına kimlik doğrulama zorunluluğu olmadan kullanılacak şekilde sadeleştirilmiştir.
 
 ## 🚀 Canlı Demo
 Uygulamanın çalışan haline şu adresten ulaşabilirsiniz:  
@@ -23,9 +23,9 @@ Uygulamanın çalışan haline şu adresten ulaşabilirsiniz:
 
 ## 📋 Özellikler
 
-- ✅ **CRUD İşlemleri:** Yazı ekleme, listeleme, okuma, düzenleme ve silme
-- ✅ **Kullanıcı Kimlik Doğrulama:** JWT tabanlı kayıt ve giriş sistemi
-- ✅ **Yetkilendirme:** Kullanıcı yalnızca kendi yazılarını düzenleyebilir/silebilir
+- ✅ **CRUD İşlemleri:** Yazı ekleme, listeleme, okuma, düzenleme ve silme (Şifresiz Erişim)
+- ✅ **Hızlı Paylaşım:** Giriş yapma zorunluluğu olmadan anında yazı oluşturma
+- ✅ **Açık Yönetim:** Tüm kullanıcılar yazıları düzenleyebilir veya silebilir
 - ✅ **Arama:** Başlık ve içerik üzerinden büyük/küçük harf duyarsız arama
 - ✅ **Responsive Tasarım:** Mobil uyumlu, modern ve minimal arayüz
 - ✅ **Docker Compose:** Tek komutla tüm sistemin ayağa kalkması
@@ -105,9 +105,9 @@ Uygulama **Spring Security + JWT** kullanarak token tabanlı kimlik doğrulama s
 | `/api/auth/login` | POST | Giriş yapma (JWT token döner) | Herkese açık |
 | `/api/posts` | GET | Tüm yazıları listeleme | Herkese açık |
 | `/api/posts/{id}` | GET | Tek yazı detayı | Herkese açık |
-| `/api/posts` | POST | Yeni yazı oluşturma | Giriş gerekli |
-| `/api/posts/{id}` | PUT | Yazı güncelleme | Sadece yazar |
-| `/api/posts/{id}` | DELETE | Yazı silme | Sadece yazar |
+| `/api/posts` | POST | Yeni yazı oluşturma | Herkese açık |
+| `/api/posts/{id}` | PUT | Yazı güncelleme | Herkese açık |
+| `/api/posts/{id}` | DELETE | Yazı silme | Herkese açık |
 
 ---
 
