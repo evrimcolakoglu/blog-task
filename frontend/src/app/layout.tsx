@@ -1,6 +1,5 @@
 "use client";
 
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
@@ -16,21 +15,25 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Layout Client Component olduğu için Metadata'yı export edemeyiz. Onu ayrı bir layout'ta tutmak gerekir ama basitlik için kaldırıyoruz.
-// Next.js app router'da metadata genelde ayrı bir server component'ta tutulur, fakat tek layout olduğu için doğrudan title ekleyeceğiz.
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const [username, setUsername] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
       setUsername(storedUsername);
     }
+
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleLogout = () => {
@@ -38,49 +41,64 @@ export default function RootLayout({
     localStorage.removeItem("username");
     window.location.href = "/";
   };
+
   return (
     <html
-      lang="tr" // Dili Türkçe yaptık
+      lang="tr"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      {/* bg-slate-50 ile arkaplanı hafif gri yaparak kartların öne çıkmasını sağladık */}
-      <body className="min-h-full flex flex-col bg-slate-50 text-slate-900">
+      <head>
+        <title>DevBlog | Modern Paylaşım Platformu</title>
+        <meta name="description" content="Düşüncelerinizi paylaşın, dünyayla etkileşime geçin." />
+      </head>
+      <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 bg-dots">
 
-        {/* --- NAVBAR BAŞLANGICI --- */}
-        <nav className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md">
+        {/* ─── NAVBAR ─── */}
+        <nav className={`sticky top-0 z-50 w-full transition-all duration-500 ${
+          scrolled
+            ? "glass shadow-lg shadow-indigo-100/20 border-b border-white/40"
+            : "bg-white/60 backdrop-blur-sm border-b border-slate-100"
+        }`}>
           <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-            {/* Logo Alanı */}
-            <Link href="/" className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity">
-              DevBlog.
+            {/* Logo */}
+            <Link href="/" className="group flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md shadow-indigo-200/50 group-hover:shadow-lg group-hover:shadow-indigo-300/50 transition-all duration-300 group-hover:scale-105">
+                <span className="text-white text-sm font-bold">D</span>
+              </div>
+              <span className="text-lg font-bold gradient-text tracking-tight">DevBlog</span>
             </Link>
 
-            {/* Navigasyon Linkleri ve Aksiyon Butonu */}
-            <div className="flex items-center gap-6">
-              <Link href="/" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">
+            {/* Nav Links */}
+            <div className="flex items-center gap-2 sm:gap-4">
+              <Link href="/" className="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200">
                 Yazılar
               </Link>
+
               {username ? (
                 <>
-                  <span className="text-sm font-medium text-slate-600">👤 {username}</span>
-                  <Link
-                    href="/create"
-                    className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 shadow-md shadow-blue-200 transition-all active:scale-95"
-                  >
-                    Yeni Yazı Ekle
+                  <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-100">
+                    <div className="w-5 h-5 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400 flex items-center justify-center">
+                      <span className="text-[10px] text-white font-bold">{username.charAt(0).toUpperCase()}</span>
+                    </div>
+                    <span className="text-xs font-semibold text-indigo-700">{username}</span>
+                  </div>
+                  <Link href="/create" className="btn-primary !px-4 !py-2 !text-xs !rounded-lg gap-1.5">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
+                    <span className="hidden sm:inline">Yeni Yazı</span>
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="text-sm font-medium text-rose-500 hover:text-rose-700 transition-colors"
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium text-rose-400 hover:text-rose-600 hover:bg-rose-50 transition-all duration-200"
                   >
-                    Çıkış Yap
+                    Çıkış
                   </button>
                 </>
               ) : (
                 <>
-                  <Link href="/login" className="text-sm font-medium text-blue-600 hover:underline">
+                  <Link href="/login" className="px-4 py-2 rounded-lg text-sm font-medium text-indigo-600 hover:bg-indigo-50 transition-all duration-200">
                     Giriş Yap
                   </Link>
-                  <Link href="/register" className="text-sm font-medium text-green-600 hover:underline">
+                  <Link href="/register" className="btn-primary !px-4 !py-2 !text-xs !rounded-lg">
                     Kayıt Ol
                   </Link>
                 </>
@@ -88,17 +106,26 @@ export default function RootLayout({
             </div>
           </div>
         </nav>
-        {/* --- NAVBAR BİTİŞİ --- */}
 
-        {/* Sayfa İçerikleri */}
+        {/* ─── PAGE CONTENT ─── */}
         <main className="flex-1 w-full max-w-5xl mx-auto px-4 py-8">
           {children}
         </main>
 
-        {/* Basit ve Şık Bir Footer */}
-        <footer className="border-t border-slate-200 bg-white py-8">
-          <div className="max-w-5xl mx-auto px-4 text-center text-slate-500 text-sm font-medium">
-            © 2026 DevBlog Platformu. Tüm hakları saklıdır.
+        {/* ─── FOOTER ─── */}
+        <footer className="border-t border-slate-100 bg-white/60 backdrop-blur-sm py-10">
+          <div className="max-w-5xl mx-auto px-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-md bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                  <span className="text-white text-[9px] font-bold">D</span>
+                </div>
+                <span className="text-sm font-semibold gradient-text">DevBlog</span>
+              </div>
+              <p className="text-xs text-slate-400 font-medium">
+                © 2026 DevBlog Platformu · Tüm hakları saklıdır.
+              </p>
+            </div>
           </div>
         </footer>
 

@@ -8,12 +8,12 @@ export default function EditPost() {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [isLoading, setIsLoading] = useState(true);
+    const [isSaving, setIsSaving] = useState(false);
 
     const router = useRouter();
-    const params = useParams(); // URL'deki id'yi almak için kullanıyoruz
+    const params = useParams();
     const id = params.id;
 
-    // Sayfa açıldığında mevcut yazıyı veritabanından çekip forma dolduran kısım
     useEffect(() => {
         const fetchPost = async () => {
             try {
@@ -29,11 +29,9 @@ export default function EditPost() {
                 setIsLoading(false);
             }
         };
-
         if (id) fetchPost();
     }, [id]);
 
-    // Form gönderildiğinde veritabanına PUT (Güncelleme) isteği atan kısım
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -44,6 +42,7 @@ export default function EditPost() {
             return;
         }
 
+        setIsSaving(true);
         const updatedPost = { title, content };
 
         const res = await fetch(`http://138.197.187.123:8080/api/posts/${id}`, {
@@ -56,57 +55,85 @@ export default function EditPost() {
         });
 
         if (res.ok) {
-            // Güncelleme başarılıysa tekrar yazının detay sayfasına yönlendir
             router.push(`/posts/${id}`);
             router.refresh();
         } else {
+            setIsSaving(false);
             alert("Güncelleme işlemi sırasında bir hata oluştu.");
         }
     };
 
     if (isLoading) {
-        return <div className="text-center mt-20 text-gray-500 font-semibold text-lg">Yazı bilgileri yükleniyor...</div>;
+        return (
+            <div className="flex items-center justify-center py-32">
+                <div className="flex flex-col items-center gap-3">
+                    <div className="w-8 h-8 rounded-full border-2 border-indigo-200 border-t-indigo-500 animate-spin"></div>
+                    <span className="text-sm text-slate-400 font-medium">Yazı bilgileri yükleniyor...</span>
+                </div>
+            </div>
+        );
     }
 
     return (
-        <main className="max-w-2xl mx-auto p-4 mt-8">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold text-gray-800">Yazıyı Düzenle</h1>
-                <Link href={`/posts/${id}`} className="text-blue-500 hover:underline">
-                    &larr; İptal Et ve Geri Dön
+        <div className="max-w-2xl mx-auto animate-fade-in-up">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-8">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-800">Yazıyı Düzenle</h1>
+                    <p className="text-sm text-slate-400 mt-1">Değişikliklerinizi kaydedin</p>
+                </div>
+                <Link href={`/posts/${id}`} className="btn-secondary !px-4 !py-2 !text-xs gap-1.5">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    İptal
                 </Link>
             </div>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4 bg-white p-6 rounded shadow-sm border border-gray-200">
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm space-y-6">
                 <div>
-                    <label className="block text-gray-700 font-semibold mb-2">Başlık</label>
+                    <label className="block text-sm font-semibold text-slate-600 mb-2">Başlık</label>
                     <input
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="input-modern"
                         required
                     />
                 </div>
 
                 <div>
-                    <label className="block text-gray-700 font-semibold mb-2">İçerik</label>
+                    <label className="block text-sm font-semibold text-slate-600 mb-2">İçerik</label>
                     <textarea
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
-                        rows={8}
-                        className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        rows={10}
+                        className="textarea-modern"
                         required
                     ></textarea>
                 </div>
 
                 <button
                     type="submit"
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded transition mt-2"
+                    disabled={isSaving}
+                    className="btn-warning w-full !rounded-xl !py-3.5 gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                    Değişiklikleri Kaydet
+                    {isSaving ? (
+                        <>
+                            <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin"></div>
+                            Kaydediliyor...
+                        </>
+                    ) : (
+                        <>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            Değişiklikleri Kaydet
+                        </>
+                    )}
                 </button>
             </form>
-        </main>
+        </div>
     );
 }

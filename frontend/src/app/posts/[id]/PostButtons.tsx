@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
 import { useEffect, useState } from "react";
 
 export default function PostButtons({ id, author }: { id: number, author: string }) {
@@ -14,7 +13,6 @@ export default function PostButtons({ id, author }: { id: number, author: string
     }, []);
 
     const handleDelete = async () => {
-        // Kullanıcıya yanlışlıkla silmemesi için bir uyarı çıkarıyoruz
         const isConfirmed = confirm("Bu yazıyı silmek istediğine emin misin?");
 
         if (isConfirmed) {
@@ -24,16 +22,12 @@ export default function PostButtons({ id, author }: { id: number, author: string
                 return;
             }
 
-            // Spring Boot'a DELETE isteği atıyoruz
             const res = await fetch(`http://138.197.187.123:8080/api/posts/${id}`, {
                 method: "DELETE",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
+                headers: { "Authorization": `Bearer ${token}` }
             });
 
             if (res.ok) {
-                // Silme başarılıysa ana sayfaya dön ve sayfayı yenile
                 router.push("/");
                 router.refresh();
             } else {
@@ -43,22 +37,22 @@ export default function PostButtons({ id, author }: { id: number, author: string
     };
 
     if (currentUser !== author) {
-        return null; // Yazar giriş yapan kişi değilse butonları gösterme
+        return null;
     }
 
     return (
-        <div className="flex gap-4 mt-8 pt-6 border-t border-gray-200">
-            <Link
-                href={`/edit/${id}`}
-                className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded transition"
-            >
-                Yazıyı Düzenle
+        <div className="flex gap-3 mt-8 pt-6 border-t border-slate-100">
+            <Link href={`/edit/${id}`} className="btn-warning gap-1.5">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                Düzenle
             </Link>
-            <button
-                onClick={handleDelete}
-                className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition"
-            >
-                Yazıyı Sil
+            <button onClick={handleDelete} className="btn-danger gap-1.5">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Sil
             </button>
         </div>
     );
