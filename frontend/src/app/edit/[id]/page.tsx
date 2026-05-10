@@ -38,32 +38,26 @@ export default function EditPost() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        const token = localStorage.getItem("token");
-        if (!token) {
-            alert("Lütfen giriş yapın!");
-            router.push("/login");
-            return;
-        }
-
         setIsSaving(true);
-        const updatedPost = { title, content };
 
-        const res = await fetch(`${API_URL}/api/posts/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(updatedPost),
-        });
+        try {
+            const res = await fetch(`/api/posts/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title, content }),
+            });
 
-        if (res.ok) {
-            router.push(`/posts/${id}`);
-            router.refresh();
-        } else {
+            if (res.ok) {
+                router.push(`/posts/${id}`);
+                router.refresh();
+            } else {
+                setIsSaving(false);
+                alert("Güncelleme başarısız.");
+            }
+        } catch (err) {
             setIsSaving(false);
-            alert("Güncelleme işlemi sırasında bir hata oluştu.");
+            console.error(err);
+            alert("Bağlantı hatası.");
         }
     };
 

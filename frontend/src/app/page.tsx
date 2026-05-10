@@ -27,17 +27,14 @@ export default function Home() {
       setCurrentUser(storedUsername);
     }
 
-    const dynamicApiUrl = process.env.NEXT_PUBLIC_API_URL || 
-        (typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.hostname}:8080` : "http://localhost:8080");
-
-    fetch(`${dynamicApiUrl}/api/posts`, { cache: "no-store" })
+    fetch("/api/posts", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
         setPosts(data);
         setIsLoading(false);
       })
       .catch((err) => {
-        console.error("Veri çekme hatası:", err);
+        console.error(err);
         setIsLoading(false);
       });
   }, []);
@@ -52,22 +49,21 @@ export default function Home() {
   });
 
   const handleDelete = async (id: number) => {
-    if (confirm("Bu yazıyı silmek istediğinize emin misiniz?")) {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Bu işlem için giriş yapmalısınız.");
-        return;
-      }
-      const res = await fetch(`${API_URL}/api/posts/${id}`, {
+    if (!confirm("Bu yazıyı silmek istediğinize emin misiniz?")) return;
+
+    try {
+      const res = await fetch(`/api/posts/${id}`, {
         method: "DELETE",
-        headers: { "Authorization": `Bearer ${token}` }
       });
+
       if (res.ok) {
-        setPosts(posts.filter((p) => p.id !== id));
+        setPosts(posts.filter((post) => post.id !== id));
       } else {
-        const errorText = await res.text();
-        alert("Silme başarısız: " + errorText);
+        alert("Silme işlemi başarısız oldu.");
       }
+    } catch (err) {
+      console.error(err);
+      alert("Bağlantı hatası oluştu.");
     }
   };
 

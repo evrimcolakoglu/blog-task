@@ -19,7 +19,7 @@ export default function CreatePost() {
         setIsLoading(true);
 
         try {
-            const res = await fetch(`${API_URL}/api/posts`, {
+            const res = await fetch("/api/posts", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ title, content, author: author || "Anonim" }),

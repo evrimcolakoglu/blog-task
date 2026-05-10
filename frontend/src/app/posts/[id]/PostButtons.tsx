@@ -18,26 +18,22 @@ export default function PostButtons({ id, author }: { id: number, author: string
     }, []);
 
     const handleDelete = async () => {
-        const isConfirmed = confirm("Bu yazıyı silmek istediğine emin misin?");
+        if (!confirm("Bu yazıyı silmek istediğinize emin misiniz?")) return;
 
-        if (isConfirmed) {
-            const token = localStorage.getItem("token");
-            if (!token) {
-                alert("Lütfen giriş yapın!");
-                return;
-            }
-
-            const res = await fetch(`${API_URL}/api/posts/${id}`, {
+        try {
+            const res = await fetch(`/api/posts/${id}`, {
                 method: "DELETE",
-                headers: { "Authorization": `Bearer ${token}` }
             });
 
             if (res.ok) {
                 router.push("/");
                 router.refresh();
             } else {
-                alert("Silme işlemi sırasında bir hata oluştu.");
+                alert("Silme işlemi başarısız oldu.");
             }
+        } catch (err) {
+            console.error(err);
+            alert("Bağlantı hatası oluştu.");
         }
     };
 
