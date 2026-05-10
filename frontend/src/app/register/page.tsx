@@ -16,19 +16,25 @@ export default function Register() {
         e.preventDefault();
         setIsLoading(true);
 
-        const res = await fetch(`${API_URL}/api/auth/register`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password }),
-        });
+        try {
+            const res = await fetch(`${API_URL}/api/auth/register`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password }),
+            });
 
-        if (res.ok) {
-            alert("Kayıt başarılı! Lütfen giriş yapın.");
-            router.push("/login");
-        } else {
+            if (res.ok) {
+                alert("Kayıt başarılı! Lütfen giriş yapın.");
+                router.push("/login");
+            } else {
+                setIsLoading(false);
+                const errText = await res.text();
+                alert("Kayıt başarısız: " + errText);
+            }
+        } catch (error) {
             setIsLoading(false);
-            const errText = await res.text();
-            alert("Kayıt başarısız: " + errText);
+            console.error("Kayıt hatası:", error);
+            alert("Sunucuya bağlanılamadı. Lütfen internet bağlantınızı kontrol edin.");
         }
     };
 

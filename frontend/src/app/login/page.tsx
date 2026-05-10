@@ -14,20 +14,26 @@ export default function Login() {
         e.preventDefault();
         setIsLoading(true);
 
-        const res = await fetch(`${API_URL}/api/auth/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password }),
-        });
+        try {
+            const res = await fetch(`${API_URL}/api/auth/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password }),
+            });
 
-        if (res.ok) {
-            const data = await res.json();
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("username", data.username);
-            window.location.href = "/";
-        } else {
+            if (res.ok) {
+                const data = await res.json();
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("username", data.username);
+                window.location.href = "/";
+            } else {
+                setIsLoading(false);
+                alert("Giriş başarısız. Kullanıcı adı veya şifre hatalı.");
+            }
+        } catch (error) {
             setIsLoading(false);
-            alert("Giriş başarısız. Kullanıcı adı veya şifre hatalı.");
+            console.error("Giriş hatası:", error);
+            alert("Sunucuya bağlanılamadı. Lütfen internet bağlantınızı kontrol edin.");
         }
     };
 
