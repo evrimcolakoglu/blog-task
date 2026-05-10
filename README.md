@@ -116,8 +116,8 @@ Uygulama **Spring Security + JWT** kullanarak token tabanlı kimlik doğrulama s
 Projede kod kalitesini artırmak için **GitHub Actions** ile otomatik CI süreci kurulmuştur.
 
 - **Tetikleyici:** `main` veya `develop` dallarına yapılan her Push veya Pull Request
-- **Backend CI:** JDK 17 kurulumu → Maven ile derleme (`mvn clean package -DskipTests`)
-- **Frontend CI:** Node.js 20 kurulumu → `npm install` → `npm run build`
+- **Backend CI:** JDK 17 kurulumu → Maven ile derleme ve test (`mvn clean package`)
+- **Frontend CI:** Node.js 20 kurulumu → `npm install` → Lint kontrolü (`npm run lint`) → `npm run build`
 
 ---
 
