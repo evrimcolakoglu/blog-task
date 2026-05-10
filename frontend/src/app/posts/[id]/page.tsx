@@ -5,7 +5,7 @@ import PostButtons from "./PostButtons";
 // Backend'den tek bir yazıyı çeken fonksiyon (sunucu tarafında çalışır)
 async function getPost(id: string) {
     // Docker içinde çalışırken internal URL kullan, yoksa public URL kullan
-    const baseUrl = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+    const baseUrl = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://blog-backend:8080";
     const res = await fetch(`${baseUrl}/api/posts/${id}`, { cache: "no-store" });
     if (!res.ok) {
         return null;

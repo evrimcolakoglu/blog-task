@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const INTERNAL_API_URL = process.env.INTERNAL_API_URL || "http://localhost:8080";
+const INTERNAL_API_URL = process.env.INTERNAL_API_URL || "http://blog-backend:8080";
 
 export async function PUT(
     request: Request,
