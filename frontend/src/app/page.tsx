@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 
+    (typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.hostname}:8080` : "http://localhost:8080");
 
 interface Post {
   id: number;
@@ -25,7 +26,10 @@ export default function Home() {
       setCurrentUser(storedUsername);
     }
 
-    fetch(`${API_URL}/api/posts`, { cache: "no-store" })
+    const dynamicApiUrl = process.env.NEXT_PUBLIC_API_URL || 
+        (typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.hostname}:8080` : "http://localhost:8080");
+
+    fetch(`${dynamicApiUrl}/api/posts`, { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
         setPosts(data);
