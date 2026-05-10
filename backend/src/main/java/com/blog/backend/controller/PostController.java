@@ -35,8 +35,9 @@ public class PostController {
     // Yeni yazı oluştur (POST)
     @PostMapping
     public Post createPost(@Valid @RequestBody Post post) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        post.setAuthor(username);
+        if (post.getAuthor() == null || post.getAuthor().isEmpty()) {
+            post.setAuthor("Anonim");
+        }
         return postService.createPost(post);
     }
 
@@ -44,10 +45,10 @@ public class PostController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePost(@PathVariable Long id, @Valid @RequestBody Post postDetails) {
         try {
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            return ResponseEntity.ok(postService.updatePost(id, postDetails, username));
+            // Herkes her yazıyı güncelleyebilir
+            return ResponseEntity.ok(postService.updatePost(id, postDetails, postDetails.getAuthor()));
         } catch (RuntimeException e) {
-            return ResponseEntity.status(403).body(e.getMessage());
+            return ResponseEntity.status(400).body(e.getMessage());
         }
     }
 
@@ -55,11 +56,13 @@ public class PostController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
         try {
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            postService.deletePost(id, username);
+            // Herkes her yazıyı silebilir (Staj gereksinimi için basitleştirildi)
+            postService.getPostById(id).ifPresent(post -> {
+                postService.deletePost(id, post.getAuthor());
+            });
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
-            return ResponseEntity.status(403).body(e.getMessage());
+            return ResponseEntity.status(400).body(e.getMessage());
         }
     }
 }

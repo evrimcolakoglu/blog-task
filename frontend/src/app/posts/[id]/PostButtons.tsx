@@ -39,10 +39,6 @@ export default function PostButtons({ id, author }: { id: number, author: string
         }
     };
 
-    if (currentUser !== author) {
-        return null;
-    }
-
     return (
         <div className="flex gap-3 mt-8 pt-6 border-t border-slate-100">
             <Link href={`/edit/${id}`} className="btn-warning gap-1.5">

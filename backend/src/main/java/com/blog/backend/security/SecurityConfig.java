@@ -30,7 +30,7 @@ public class SecurityConfig {
         http.cors().and().csrf().disable()
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
+                        .requestMatchers("/api/posts/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

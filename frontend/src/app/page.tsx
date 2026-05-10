@@ -163,14 +163,12 @@ export default function Home() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </Link>
-                  {currentUser === post.author && (
-                    <button
-                      onClick={() => handleDelete(post.id)}
-                      className="text-xs font-medium text-slate-300 hover:text-rose-500 transition-colors duration-200"
-                    >
-                      Sil
-                    </button>
-                  )}
+                  <button
+                    onClick={() => handleDelete(post.id)}
+                    className="text-xs font-medium text-slate-300 hover:text-rose-500 transition-colors duration-200"
+                  >
+                    Sil
+                  </button>
                 </div>
               </div>
             </div>

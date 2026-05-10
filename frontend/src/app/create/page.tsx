@@ -3,30 +3,37 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+
 export default function CreatePost() {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
+    const [author, setAuthor] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsLoading(true);
 
-        // GİRİŞ KONTROLÜNÜ İPTAL ETTİK, DİREKT GÖNDERİYORUZ
         try {
-            const res = await fetch("http://138.197.187.123:8080/api/posts", {
+            const res = await fetch(`${API_URL}/api/posts`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                // Yazar adını zorunlu olarak "Anonim" veya "Evrim" yolluyoruz
-                body: JSON.stringify({ title, content, author: "Evrim" }),
+                body: JSON.stringify({ title, content, author: author || "Anonim" }),
             });
 
             if (res.ok) {
                 router.push("/");
+                router.refresh();
             } else {
-                alert("Backend'e kayıt yapılamadı, ama sistem çalışıyor.");
+                setIsLoading(false);
+                alert("Yazı yayınlanırken bir hata oluştu.");
             }
         } catch (err) {
+            setIsLoading(false);
             console.error(err);
+            alert("Sunucuya bağlanılamadı.");
         }
     };
 
@@ -50,7 +57,18 @@ export default function CreatePost() {
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         className="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                        placeholder="Yazı başlığı..."
                         required
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Yazar Adı</label>
+                    <input
+                        type="text"
+                        value={author}
+                        onChange={(e) => setAuthor(e.target.value)}
+                        className="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                        placeholder="İsminiz (Boş bırakılırsa Anonim)..."
                     />
                 </div>
                 <div>
@@ -59,11 +77,16 @@ export default function CreatePost() {
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         className="w-full p-4 border border-slate-200 rounded-xl h-48 focus:ring-2 focus:ring-indigo-500 outline-none resize-none"
+                        placeholder="Yazı içeriği..."
                         required
                     />
                 </div>
-                <button type="submit" className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold transition-colors">
-                    Kaydet ve Yayınla
+                <button 
+                    type="submit" 
+                    disabled={isLoading}
+                    className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold transition-colors disabled:opacity-50"
+                >
+                    {isLoading ? "Yayınlanıyor..." : "Kaydet ve Yayınla"}
                 </button>
             </form>
         </div>
