@@ -13,9 +13,17 @@ export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
+
   useEffect(() => {
+    // Current user'ı localStorage'dan alıyoruz
+    const storedUsername = localStorage.getItem("username");
+    if (storedUsername) {
+      setCurrentUser(storedUsername);
+    }
+
     // Backend IP adresin üzerinden verileri çekiyoruz
-    fetch("http://138.197.187.123:8080/api/posts")
+    fetch("http://138.197.187.123:8080/api/posts", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => setPosts(data))
       .catch((err) => console.error("Veri çekme hatası:", err));
@@ -32,8 +40,23 @@ export default function Home() {
 
   const handleDelete = async (id: number) => {
     if (confirm("Bu yazıyı silmek istediğinize emin misiniz?")) {
-      await fetch(`http://138.197.187.123:8080/api/posts/${id}`, { method: "DELETE" });
-      setPosts(posts.filter((p) => p.id !== id));
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Bu işlem için giriş yapmalısınız.");
+        return;
+      }
+      const res = await fetch(`http://138.197.187.123:8080/api/posts/${id}`, { 
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (res.ok) {
+        setPosts(posts.filter((p) => p.id !== id));
+      } else {
+        const errorText = await res.text();
+        alert("Silme başarısız: " + errorText);
+      }
     }
   };
 
@@ -89,12 +112,14 @@ export default function Home() {
                   >
                     Devamını Oku →
                   </Link>
-                  <button
-                    onClick={() => handleDelete(post.id)}
-                    className="text-sm font-semibold text-rose-500 hover:text-rose-700 transition-colors"
-                  >
-                    Sil
-                  </button>
+                  {currentUser === post.author && (
+                    <button
+                      onClick={() => handleDelete(post.id)}
+                      className="text-sm font-semibold text-rose-500 hover:text-rose-700 transition-colors"
+                    >
+                      Sil
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

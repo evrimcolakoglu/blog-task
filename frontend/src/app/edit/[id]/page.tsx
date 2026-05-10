@@ -7,7 +7,6 @@ import Link from "next/link";
 export default function EditPost() {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
-    const [author, setAuthor] = useState("");
     const [isLoading, setIsLoading] = useState(true);
 
     const router = useRouter();
@@ -23,7 +22,6 @@ export default function EditPost() {
                     const data = await res.json();
                     setTitle(data.title);
                     setContent(data.content);
-                    setAuthor(data.author);
                 }
             } catch (error) {
                 console.error("Veri çekilirken hata oluştu", error);
@@ -39,12 +37,20 @@ export default function EditPost() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const updatedPost = { title, content, author };
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("Lütfen giriş yapın!");
+            router.push("/login");
+            return;
+        }
+
+        const updatedPost = { title, content };
 
         const res = await fetch(`http://138.197.187.123:8080/api/posts/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify(updatedPost),
         });
@@ -78,17 +84,6 @@ export default function EditPost() {
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-gray-700 font-semibold mb-2">Yazar</label>
-                    <input
-                        type="text"
-                        value={author}
-                        onChange={(e) => setAuthor(e.target.value)}
                         className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                     />

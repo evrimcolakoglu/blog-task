@@ -44,7 +44,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
                 </div>
 
                 {/* BUTONLARI BURAYA EKLEDİK */}
-                <PostButtons id={post.id} />
+                <PostButtons id={post.id} author={post.author} />
             </article>
         </main>
     );

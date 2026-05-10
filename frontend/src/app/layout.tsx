@@ -1,7 +1,10 @@
+"use client";
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Link from "next/link"; // Link bileşenini ekledik
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,17 +16,28 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// 1. Metadata'yı profesyonelleştirelim
-export const metadata: Metadata = {
-  title: "DevBlog | Modern Paylaşım Platformu",
-  description: "Düşüncelerinizi paylaşın, dünyayla etkileşime geçin.",
-};
+// Layout Client Component olduğu için Metadata'yı export edemeyiz. Onu ayrı bir layout'ta tutmak gerekir ama basitlik için kaldırıyoruz.
+// Next.js app router'da metadata genelde ayrı bir server component'ta tutulur, fakat tek layout olduğu için doğrudan title ekleyeceğiz.
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [username, setUsername] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("username");
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    window.location.href = "/";
+  };
   return (
     <html
       lang="tr" // Dili Türkçe yaptık
@@ -45,12 +59,32 @@ export default function RootLayout({
               <Link href="/" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">
                 Yazılar
               </Link>
-              <Link
-                href="/create"
-                className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 shadow-md shadow-blue-200 transition-all active:scale-95"
-              >
-                Yeni Yazı Ekle
-              </Link>
+              {username ? (
+                <>
+                  <span className="text-sm font-medium text-slate-600">👤 {username}</span>
+                  <Link
+                    href="/create"
+                    className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 shadow-md shadow-blue-200 transition-all active:scale-95"
+                  >
+                    Yeni Yazı Ekle
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="text-sm font-medium text-rose-500 hover:text-rose-700 transition-colors"
+                  >
+                    Çıkış Yap
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link href="/login" className="text-sm font-medium text-blue-600 hover:underline">
+                    Giriş Yap
+                  </Link>
+                  <Link href="/register" className="text-sm font-medium text-green-600 hover:underline">
+                    Kayıt Ol
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </nav>

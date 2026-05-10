@@ -7,20 +7,27 @@ import Link from "next/link";
 export default function CreatePost() {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
-    const [author, setAuthor] = useState("");
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("Lütfen giriş yapın!");
+            router.push("/login");
+            return;
+        }
+
         // Formdaki verileri bir araya getiriyoruz
-        const newPost = { title, content, author };
+        const newPost = { title, content };
 
         // Arka planda çalışan Spring Boot (Backend) sunucumuza veriyi POST ediyoruz
         const res = await fetch("http://138.197.187.123:8080/api/posts", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify(newPost),
         });
@@ -50,17 +57,6 @@ export default function CreatePost() {
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-gray-700 font-semibold mb-2">Yazar</label>
-                    <input
-                        type="text"
-                        value={author}
-                        onChange={(e) => setAuthor(e.target.value)}
                         className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                     />

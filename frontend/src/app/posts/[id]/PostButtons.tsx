@@ -3,17 +3,33 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-export default function PostButtons({ id }: { id: number }) {
+import { useEffect, useState } from "react";
+
+export default function PostButtons({ id, author }: { id: number, author: string }) {
     const router = useRouter();
+    const [currentUser, setCurrentUser] = useState<string | null>(null);
+
+    useEffect(() => {
+        setCurrentUser(localStorage.getItem("username"));
+    }, []);
 
     const handleDelete = async () => {
         // Kullanıcıya yanlışlıkla silmemesi için bir uyarı çıkarıyoruz
         const isConfirmed = confirm("Bu yazıyı silmek istediğine emin misin?");
 
         if (isConfirmed) {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                alert("Lütfen giriş yapın!");
+                return;
+            }
+
             // Spring Boot'a DELETE isteği atıyoruz
             const res = await fetch(`http://138.197.187.123:8080/api/posts/${id}`, {
                 method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
             });
 
             if (res.ok) {
@@ -25,6 +41,10 @@ export default function PostButtons({ id }: { id: number }) {
             }
         }
     };
+
+    if (currentUser !== author) {
+        return null; // Yazar giriş yapan kişi değilse butonları gösterme
+    }
 
     return (
         <div className="flex gap-4 mt-8 pt-6 border-t border-gray-200">
