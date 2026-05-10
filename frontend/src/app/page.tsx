@@ -21,6 +21,7 @@ export default function Home() {
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentUser(storedUsername);
     }
 

@@ -11,6 +11,7 @@ export default function PostButtons({ id, author }: { id: number, author: string
     const [currentUser, setCurrentUser] = useState<string | null>(null);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCurrentUser(localStorage.getItem("username"));
     }, []);
 
