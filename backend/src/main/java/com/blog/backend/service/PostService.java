@@ -30,22 +30,21 @@ public class PostService {
     }
 
     // Yazıyı güncelle
-    public Post updatePost(Long id, Post postDetails, String username) {
+    public Post updatePost(Long id, Post postDetails) {
         Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
-        if (!post.getAuthor().equals(username)) {
-            throw new RuntimeException("Not authorized");
-        }
         post.setTitle(postDetails.getTitle());
         post.setContent(postDetails.getContent());
-        // author remains the same
+        // author retains original value or can be updated if sent
+        if (postDetails.getAuthor() != null) {
+            post.setAuthor(postDetails.getAuthor());
+        }
         return postRepository.save(post);
     }
 
     // Yazıyı sil
-    public void deletePost(Long id, String username) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
-        if (!post.getAuthor().equals(username)) {
-            throw new RuntimeException("Not authorized");
+    public void deletePost(Long id) {
+        if (!postRepository.existsById(id)) {
+            throw new RuntimeException("Post not found");
         }
         postRepository.deleteById(id);
     }

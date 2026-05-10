@@ -46,7 +46,7 @@ public class PostController {
     public ResponseEntity<?> updatePost(@PathVariable Long id, @Valid @RequestBody Post postDetails) {
         try {
             // Herkes her yazıyı güncelleyebilir
-            return ResponseEntity.ok(postService.updatePost(id, postDetails, postDetails.getAuthor()));
+            return ResponseEntity.ok(postService.updatePost(id, postDetails));
         } catch (RuntimeException e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
@@ -56,10 +56,7 @@ public class PostController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
         try {
-            // Herkes her yazıyı silebilir (Staj gereksinimi için basitleştirildi)
-            postService.getPostById(id).ifPresent(post -> {
-                postService.deletePost(id, post.getAuthor());
-            });
+            postService.deletePost(id);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.status(400).body(e.getMessage());
