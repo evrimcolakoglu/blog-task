@@ -34,7 +34,7 @@ export default function Register() {
         } catch (error) {
             setIsLoading(false);
             console.error("Kayıt hatası:", error);
-            alert("Sunucuya bağlanılamadı. Lütfen internet bağlantınızı kontrol edin.");
+            alert(`Sunucuya bağlanılamadı. (Denenen Adres: ${API_URL})`);
         }
     };
 

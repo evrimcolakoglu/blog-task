@@ -33,7 +33,7 @@ export default function CreatePost() {
         } catch (err) {
             setIsLoading(false);
             console.error(err);
-            alert("Sunucuya bağlanılamadı.");
+            alert(`Sunucuya bağlanılamadı. (Denenen Adres: ${API_URL})`);
         }
     };
 
