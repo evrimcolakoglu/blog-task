@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+
 interface Post {
   id: number;
   title: string;
@@ -22,7 +24,7 @@ export default function Home() {
       setCurrentUser(storedUsername);
     }
 
-    fetch("http://138.197.187.123:8080/api/posts", { cache: "no-store" })
+    fetch(`${API_URL}/api/posts`, { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
         setPosts(data);
@@ -50,7 +52,7 @@ export default function Home() {
         alert("Bu işlem için giriş yapmalısınız.");
         return;
       }
-      const res = await fetch(`http://138.197.187.123:8080/api/posts/${id}`, {
+      const res = await fetch(`${API_URL}/api/posts/${id}`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${token}` }
       });

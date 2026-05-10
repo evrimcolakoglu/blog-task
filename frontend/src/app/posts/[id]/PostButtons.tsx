@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+
 export default function PostButtons({ id, author }: { id: number, author: string }) {
     const router = useRouter();
     const [currentUser, setCurrentUser] = useState<string | null>(null);
@@ -22,7 +24,7 @@ export default function PostButtons({ id, author }: { id: number, author: string
                 return;
             }
 
-            const res = await fetch(`http://138.197.187.123:8080/api/posts/${id}`, {
+            const res = await fetch(`${API_URL}/api/posts/${id}`, {
                 method: "DELETE",
                 headers: { "Authorization": `Bearer ${token}` }
             });

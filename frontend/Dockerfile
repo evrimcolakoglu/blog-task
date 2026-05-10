@@ -4,6 +4,10 @@ FROM node:20-slim
 # Çalışma dizinini ayarlıyoruz
 WORKDIR /app
 
+# API adresi build-time argümanı (varsayılan: localhost)
+ARG NEXT_PUBLIC_API_URL=http://localhost:8080
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
 # Bağımlılıkları kopyalayıp yüklüyoruz
 COPY package*.json ./
 RUN npm install

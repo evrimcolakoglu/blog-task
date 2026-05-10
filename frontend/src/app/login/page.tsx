@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+
 export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -14,7 +16,7 @@ export default function Login() {
         e.preventDefault();
         setIsLoading(true);
 
-        const res = await fetch("http://138.197.187.123:8080/api/auth/login", {
+        const res = await fetch(`${API_URL}/api/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, password }),
@@ -34,7 +36,6 @@ export default function Login() {
     return (
         <div className="flex items-center justify-center min-h-[70vh] animate-fade-in-up">
             <div className="w-full max-w-md">
-                {/* Header */}
                 <div className="text-center mb-8">
                     <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-200/50">
                         <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -45,51 +46,25 @@ export default function Login() {
                     <p className="text-sm text-slate-400 mt-1">Hesabınıza giriş yapın</p>
                 </div>
 
-                {/* Form */}
                 <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm space-y-5">
                     <div>
                         <label className="block text-sm font-semibold text-slate-600 mb-2">Kullanıcı Adı</label>
-                        <input
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            className="input-modern"
-                            placeholder="kullanici_adi"
-                            required
-                        />
+                        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="input-modern" placeholder="kullanici_adi" required />
                     </div>
                     <div>
                         <label className="block text-sm font-semibold text-slate-600 mb-2">Şifre</label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="input-modern"
-                            placeholder="••••••••"
-                            required
-                        />
+                        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="input-modern" placeholder="••••••••" required />
                     </div>
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="btn-primary w-full !rounded-xl !py-3.5 gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
-                    >
+                    <button type="submit" disabled={isLoading} className="btn-primary w-full !rounded-xl !py-3.5 gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
                         {isLoading ? (
-                            <>
-                                <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin"></div>
-                                Giriş yapılıyor...
-                            </>
-                        ) : (
-                            "Giriş Yap"
-                        )}
+                            <><div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin"></div>Giriş yapılıyor...</>
+                        ) : ("Giriş Yap")}
                     </button>
                 </form>
 
                 <p className="text-center mt-6 text-sm text-slate-400">
                     Hesabın yok mu?{" "}
-                    <Link href="/register" className="font-semibold text-indigo-500 hover:text-indigo-700 transition-colors">
-                        Kayıt Ol
-                    </Link>
+                    <Link href="/register" className="font-semibold text-indigo-500 hover:text-indigo-700 transition-colors">Kayıt Ol</Link>
                 </p>
             </div>
         </div>
