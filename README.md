@@ -39,7 +39,7 @@ Uygulamanın yayındaki haline şu adresten ulaşabilirsiniz:
 **Kimlik Doğrulama (Auth) Altyapısı Hakkında Geliştirici Notu:**
 Projenin geliştirme sürecinde JWT tabanlı kullanıcı kayıt ve giriş (Authentication & Authorization) sistemi tasarlanmış ve hem Frontend hem de Backend katmanlarına entegre edilmiştir. Ancak canlı ortama (production) geçiş öncesi yapılan son kararlılık testlerinde, Spring Security yetkilendirme filtreleri ile Frontend arasındaki senkronizasyonda stabilite sorunları gözlemlenmiştir.
 
-Teslimat süresine (deadline) sadık kalmak ve projenin temel gereksinimlerinin (CRUD, Arama, Docker, CI/CD) kusursuz çalıştığı kararlı (stable) bir sürüm sunmak adına, risk yönetimi prensipleri gereği yetkilendirme özelliği bu sürümde bilerek devre dışı bırakılmış (rollback) ve "Şifresiz Hızlı Erişim" modeline geçilmiştir. İlgili altyapı kodlarda mevcut olup, planlanan ilk geliştirmelerde aktif edilecektir.
+Teslimat süresine (deadline) sadık kalmak ve projenin temel gereksinimlerinin (CRUD, Arama, Docker, CI/CD) kusursuz çalıştığı kararlı (stable) bir sürüm sunmak adına, risk yönetimi prensipleri gereği yetkilendirme özelliği bu sürümde bilerek devre dışı bırakılmış (rollback) ve "Şifresiz Hızlı Erişim" modeline geçilmiştir. İlgili altyapı kodlarda mevcut olup, ilgili kişiler tarafından istenmesi durumunda tekrar aktif hale getirilmeye çalışılacaktır.
 
 ---
 
