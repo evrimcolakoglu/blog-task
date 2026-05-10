@@ -18,7 +18,7 @@ export default function EditPost() {
     useEffect(() => {
         const fetchPost = async () => {
             try {
-                const res = await fetch(`http://localhost:8080/api/posts/${id}`);
+                const res = await fetch(`http://138.197.187.123:8080/api/posts/${id}`);
                 if (res.ok) {
                     const data = await res.json();
                     setTitle(data.title);
@@ -41,7 +41,7 @@ export default function EditPost() {
 
         const updatedPost = { title, content, author };
 
-        const res = await fetch(`http://localhost:8080/api/posts/${id}`, {
+        const res = await fetch(`http://138.197.187.123:8080/api/posts/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

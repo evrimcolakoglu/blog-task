@@ -11,7 +11,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
-@CrossOrigin(origins = "http://localhost:3000") // Frontend'in erişimine izin verir
+@CrossOrigin(origins = { "http://localhost:3000", "http://138.197.187.123:3000" }) // Dünyadaki tüm adreslerden gelen
+                                                                                   // isteklere izin verir
 public class PostController {
 
     @Autowired

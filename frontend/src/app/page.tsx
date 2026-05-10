@@ -21,7 +21,7 @@ export default function Home() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await fetch("http://localhost:8080/api/posts");
+        const res = await fetch("http://138.197.187.123:8080/api/posts");
         if (res.ok) {
           const data = await res.json();
           // Yazıları en yeniden en eskiye sıralayalım (ID'ye göre ters çevirerek)

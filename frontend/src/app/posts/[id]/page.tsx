@@ -4,7 +4,7 @@ import PostButtons from "./PostButtons"; // Yeni butonlarımızı içeri aktard�
 
 // Backend'den tek bir yazıyı çeken fonksiyon
 async function getPost(id: string) {
-    const res = await fetch(`http://localhost:8080/api/posts/${id}`, { cache: "no-store" });
+    const res = await fetch(`http://138.197.187.123:8080/api/posts/${id}`, { cache: "no-store" });
     if (!res.ok) {
         return null;
     }

@@ -17,7 +17,7 @@ export default function CreatePost() {
         const newPost = { title, content, author };
 
         // Arka planda çalışan Spring Boot (Backend) sunucumuza veriyi POST ediyoruz
-        const res = await fetch("http://localhost:8080/api/posts", {
+        const res = await fetch("http://138.197.187.123:8080/api/posts", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

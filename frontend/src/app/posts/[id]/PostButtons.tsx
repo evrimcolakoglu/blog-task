@@ -12,7 +12,7 @@ export default function PostButtons({ id }: { id: number }) {
 
         if (isConfirmed) {
             // Spring Boot'a DELETE isteği atıyoruz
-            const res = await fetch(`http://localhost:8080/api/posts/${id}`, {
+            const res = await fetch(`http://138.197.187.123:8080/api/posts/${id}`, {
                 method: "DELETE",
             });
 
