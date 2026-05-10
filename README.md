@@ -1,6 +1,6 @@
 # DevBlog - Modern Topluluk Blog Platformu
 
-DevBlog, herkesin özgürce ve anında fikirlerini paylaşabileceği, hız ve kullanıcı deneyimi odaklı, modern bir blog platformudur. Bu proje, staj değerlendirme süreci kapsamında tam yığın (full-stack) geliştirme yetkinliklerini en güncel teknolojilerle sergilemek amacıyla hazırlanmıştır.
+DevBlog, herkesin özgürce ve anında fikirlerini paylaşabileceği, hız ve kullanıcı deneyimi odaklı, modern bir blog platformudur. Bu proje, staj görevlendirmesi süreci kapsamında tam yığın (full-stack) geliştirme yetkinliklerini en güncel teknolojilerle sergilemek amacıyla hazırlanmıştır.
 
 ## 🚀 Canlı Demo
 Uygulamanın yayındaki haline şu adresten ulaşabilirsiniz:  
