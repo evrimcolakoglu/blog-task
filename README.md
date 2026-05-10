@@ -34,9 +34,18 @@ Uygulamanın yayındaki haline şu adresten ulaşabilirsiniz:
 
 ---
 
+## 🧠 Mimari Karar Kaydı (Architecture Decision Record - ADR)
+
+**Kimlik Doğrulama (Auth) Altyapısı Hakkında Geliştirici Notu:**
+Projenin geliştirme sürecinde JWT tabanlı kullanıcı kayıt ve giriş (Authentication & Authorization) sistemi tasarlanmış ve hem Frontend hem de Backend katmanlarına entegre edilmiştir. Ancak canlı ortama (production) geçiş öncesi yapılan son kararlılık testlerinde, Spring Security yetkilendirme filtreleri ile Frontend arasındaki senkronizasyonda stabilite sorunları gözlemlenmiştir.
+
+Teslimat süresine (deadline) sadık kalmak ve projenin temel gereksinimlerinin (CRUD, Arama, Docker, CI/CD) kusursuz çalıştığı kararlı (stable) bir sürüm sunmak adına, risk yönetimi prensipleri gereği yetkilendirme özelliği bu sürümde bilerek devre dışı bırakılmış (rollback) ve "Şifresiz Hızlı Erişim" modeline geçilmiştir. İlgili altyapı kodlarda mevcut olup, planlanan ilk geliştirmelerde aktif edilecektir.
+
+---
+
 ## 🏗️ Mimari Yapı
 
-```
+```text
 blog-task/
 ├── backend/                  # Spring Boot REST API
 │   ├── src/main/java/com/blog/backend/
@@ -56,58 +65,3 @@ blog-task/
 ├── docker-compose.yml        # PostgreSQL + Backend + Frontend orkestrasyonu
 ├── .github/workflows/        # GitHub Actions CI süreçleri
 └── README.md
-```
-
----
-
-## 📦 Proje Kurulumu (Yerel Ortam)
-
-### Ön Koşullar
-- [Docker](https://docs.docker.com/get-docker/) & [Docker Compose](https://docs.docker.com/compose/install/)
-
-### Çalıştırma
-1. **Projeyi klonlayın:**
-   ```bash
-   git clone https://github.com/evrimcolakoglu/blog-task.git
-   cd blog-task
-   ```
-2. **Sistemi başlatın:**
-   ```bash
-   docker compose up -d --build
-   ```
-3. **Uygulamaya erişin:**
-   - **Frontend:** http://localhost:3000
-   - **Backend API:** http://localhost:8080/api/posts
-
----
-
-## 📡 API Uç Noktaları
-
-Uygulama, frontend ve backend arasındaki bağlantıyı Next.js API Routes üzerinden sağlayarak ağ karmaşasını ve CORS sorunlarını ortadan kaldırır.
-
-| İşlem | Method | Endpoint (Proxy) | Yetki |
-|-------|--------|------------------|-------|
-| Yazıları Listele | GET | `/api/posts` | Herkese Açık |
-| Yazı Detayı | GET | `/api/posts/{id}` | Herkese Açık |
-| Yeni Yazı Ekle | POST | `/api/posts` | Herkese Açık |
-| Yazıyı Güncelle | PUT | `/api/posts/{id}` | Herkese Açık |
-| Yazıyı Sil | DELETE | `/api/posts/{id}` | Herkese Açık |
-
----
-
-## ⚙️ CI/CD (GitHub Actions)
-
-Projede kod kalitesini ve derleme başarısını ölçmek için GitHub Actions kullanılmaktadır:
-- **Backend CI:** Her push işleminde JDK 17 ile Maven derlemesi ve testler koşulur.
-- **Frontend CI:** Her push işleminde bağımlılıklar kontrol edilir ve Lint süreçlerinden geçerek `build` testi yapılır.
-
----
-
-## 🌿 Git Branch Stratejisi
-- `main`: Kararlı ve yayına hazır ana sürüm.
-- `develop`: Aktif geliştirme dalı.
-
----
-
-## 📝 Lisans
-Bu proje staj değerlendirme ve yetkinlik sunumu amacıyla hazırlanmıştır.
